@@ -9,7 +9,7 @@ dependencies:
   override:
     - docker info
     - if [[ -e ~/docker/image.tar ]]; then docker load -i ~/docker/image.tar; fi
-    - docker build -t skahack/dummyapp:$CIRCLE_SHA1 .
+    - docker build -t skahack/dummyapp:$CIRCLE_SHA1 skahack/dummyapp:$CIRCLE_BRANCH .
     - mkdir -p ~/docker; docker save skahack/dummyapp > ~/docker/image.tar
 
 test:
