@@ -1,0 +1,20 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  override:
+    - docker info
+    - docker build -t skahack/dummyapp:$CIRCLE_SHA1 .
+
+test:
+  override:
+    - docker run -d -p 3030:3030 skahack/dummyapp; sleep 5
+    - curl --retry 10 --retry-delay 5 -v http://localhost:3030
+
+deployment:
+  hub:
+    branch: master
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker push skahack/dummyapp:$CIRCLE_SHA1
