@@ -20,7 +20,7 @@ test:
     - >
       export BRANCH=`echo $CIRCLE_BRANCH | sed -E 's/[^a-zA-Z0-9\._-]/-/g'` &&
       export UNIQ=$BRANCH-$CIRCLE_SHA1 &&
-      docker run -d -p 3030:3030 skahack/dummyapp:$UNIQ; sleep 3
+      docker run -d -p 3030:3030 skahack/dummyapp:$UNIQ; sleep 5
     - curl --retry 10 --retry-delay 5 -v http://localhost:3030
 
 deployment:
