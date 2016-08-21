@@ -9,7 +9,8 @@ dependencies:
   override:
     - docker info
     - if [[ -e ~/docker/image.tar ]]; then docker load -i ~/docker/image.tar; fi
-    - docker build -t skahack/dummyapp:$CIRCLE_SHA1 skahack/dummyapp:$CIRCLE_BRANCH .
+    - export DOCKER_TAG=`echo $CIRCLE_BRANCH | sed -e 's/[^a-zA-Z0-9\.\-_]/-/g'`
+    - docker build -t skahack/dummyapp:$CIRCLE_SHA1 -t skahack/dummyapp:$DOCKER_TAG .
     - mkdir -p ~/docker; docker save skahack/dummyapp > ~/docker/image.tar
 
 test:
@@ -23,3 +24,4 @@ deployment:
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push skahack/dummyapp:$CIRCLE_SHA1
+      - docker push skahack/dummyapp:$DOCKER_TAG
