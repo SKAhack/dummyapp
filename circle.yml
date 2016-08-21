@@ -10,16 +10,18 @@ dependencies:
     - docker info
     - if [[ -e ~/docker/image.tar ]]; then docker load -i ~/docker/image.tar; fi
     - >
+      export SHA=`echo $CIRCLE_SHA1 | sed -E 's/(.{0,7}).*/\1/'`
       export BRANCH=`echo $CIRCLE_BRANCH | sed -E 's/[^a-zA-Z0-9\._-]/-/g'` &&
-      export UNIQ=$BRANCH-$CIRCLE_SHA1 &&
+      export UNIQ=$BRANCH-$SHA &&
       docker build -t skahack/dummyapp:$UNIQ -t skahack/dummyapp:$BRANCH .
     - mkdir -p ~/docker; docker save skahack/dummyapp > ~/docker/image.tar
 
 test:
   override:
     - >
+      export SHA=`echo $CIRCLE_SHA1 | sed -E 's/(.{0,7}).*/\1/'`
       export BRANCH=`echo $CIRCLE_BRANCH | sed -E 's/[^a-zA-Z0-9\._-]/-/g'` &&
-      export UNIQ=$BRANCH-$CIRCLE_SHA1 &&
+      export UNIQ=$BRANCH-$SHA &&
       docker run -d -p 3030:3030 skahack/dummyapp:$UNIQ
     - sleep 5
     - curl --retry 10 --retry-delay 5 -v http://localhost:3030
@@ -30,9 +32,11 @@ deployment:
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - >
+        export SHA=`echo $CIRCLE_SHA1 | sed -E 's/(.{0,7}).*/\1/'`
         export BRANCH=`echo $CIRCLE_BRANCH | sed -E 's/[^a-zA-Z0-9\._-]/-/g'` &&
-        export UNIQ=$BRANCH-$CIRCLE_SHA1 &&
+        export UNIQ=$BRANCH-$SHA &&
         docker push skahack/dummyapp:$UNIQ
       - >
+        export SHA=`echo $CIRCLE_SHA1 | sed -E 's/(.{0,7}).*/\1/'`
         export BRANCH=`echo $CIRCLE_BRANCH | sed -E 's/[^a-zA-Z0-9\._-]/-/g'` &&
         docker push skahack/dummyapp:$BRANCH
