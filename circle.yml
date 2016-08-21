@@ -9,7 +9,8 @@ dependencies:
   override:
     - docker info
     - if [[ -e ~/docker/image.tar ]]; then docker load -i ~/docker/image.tar; fi
-    - export SHA=`echo $CIRCLE_SHA1 | sed -E 's/(.{0,7}).*/\1/'` && export BRANCH=`echo $CIRCLE_BRANCH | sed -E 's/[^a-zA-Z0-9\._-]/-/g'` && export UNIQ=$BRANCH-$SHA && docker build -t skahack/dummyapp:$UNIQ -t skahack/dummyapp:$BRANCH .
+    - export SHA=`echo $CIRCLE_SHA1 | sed -E 's/(.{0,7}).*/\1/'` && export BRANCH=`echo $CIRCLE_BRANCH | sed -E 's/[^a-zA-Z0-9\._-]/-/g'` && export UNIQ=$BRANCH-$SHA && docker build -t skahack/dummyapp:$BRANCH .
+    - export SHA=`echo $CIRCLE_SHA1 | sed -E 's/(.{0,7}).*/\1/'` && export BRANCH=`echo $CIRCLE_BRANCH | sed -E 's/[^a-zA-Z0-9\._-]/-/g'` && export UNIQ=$BRANCH-$SHA && docker build -t skahack/dummyapp:$UNIQ .
     - mkdir -p ~/docker; docker save skahack/dummyapp > ~/docker/image.tar
     - docker images
 
